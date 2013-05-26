@@ -15,13 +15,38 @@ fairly complete for fetching data about games and platforms.
 
 ## Basics
 
-In order to m
+In order to use this library you must first instantiate a GamesDB object.
+
+```python
+from gamesdb.api import API
+gamesdb_api = API()
+```
 
 ## Specific Calls
 
 #### Get Platforms List
 
 [GamesDB GetPlatformsList API Call](http://wiki.thegamesdb.net/index.php?title=GetPlatformsList)
+
+This call takes no arguments, and returns a list of Platform objects:
+
+```python
+platform_list = gamesdb_api.get_platforms_list()
+for platform in platform_list:
+    print platform.id, "-", platform.name, "-", platform.alias
+```
+
+Returns:
+```
+5 - 3DO - 3do
+4911 - Amiga - amiga
+4914 - Amstrad CPC - amstrad-cpc
+4916 - Android - amstrad-cpc
+23 - Arcade - arcade
+22 - Atari 2600 - atari-2600
+...
+```
+
 
 #### Get Platform
 
