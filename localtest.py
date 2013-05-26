@@ -11,6 +11,10 @@ for platform in platform_list:
         game_results = gamesdb_api.get_game(id=platform_game.id)
         for game in game_results:
             print game.id, "-", game.title, " ", game.overview
+            break
+        break
     break
-
+mega_man_games = gamesdb_api.get_games_list("Mega Man")
+for game in mega_man_games:
+    print game.id, "-", game.title, " ", game.platform
 

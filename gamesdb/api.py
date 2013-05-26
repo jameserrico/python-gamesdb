@@ -6,7 +6,7 @@ from datetime import datetime
 
 class Game(object):
 
-    def __init__(self, id, title, release_date, platform=None, overview=None, esrb_rating=None,
+    def __init__(self, id, title, release_date=None, platform=None, overview=None, esrb_rating=None,
                  genres=None, players=None, coop=None, youtube_url=None, publisher=None, developer=None, rating=None,
                  logo_url=None):
         self.id = id
@@ -170,7 +170,8 @@ class API(object):
                     platform_games_list_name = subelement.text
                 if subelement.tag == 'ReleaseDate':
                     platform_games_list_release_date = datetime.strptime(subelement.text, "%m/%d/%Y")
-            platform_games_list.append(Game(platform_games_list_id, platform_games_list_name, platform_games_list_release_date))
+            platform_games_list.append(Game(platform_games_list_id, platform_games_list_name,
+                                            release_date=platform_games_list_release_date))
         return platform_games_list
 
     def get_game(self, id=None, name=None, platform=None):
@@ -237,7 +238,7 @@ class API(object):
                 if subelement.tag == 'clearlogo':
                     # TODO Capture image dimensions from API resposne
                     game_logo_url = game_base_img_url + subelement.text
-            games_list.append(Game(game_id, game_title, games_release_date, platform=game_platform,
+            games_list.append(Game(game_id, game_title, release_date=games_release_date, platform=game_platform,
                                    overview=game_overview, esrb_rating=game_esrb_rating, genres=game_genres,
                                    players=game_players, coop=game_coop, youtube_url=game_youtube_url,
                                    publisher=game_publisher, developer=game_developer, rating=game_rating,
@@ -246,4 +247,27 @@ class API(object):
             return None
         else:
             return games_list
+
+    def get_games_list(self, name, platform=None, genre=None):
+        query_args = {'name': name}
+        if platform is not None:
+            query_args['platform'] = platform
+        if genre is not None:
+            query_args['genre'] = genre
+        games_list = []
+        GET_GAMES_LIST_ENDPOINT = 'http://thegamesdb.net/api/GetGamesList.php?'
+        xml_response = self.make_call(GET_GAMES_LIST_ENDPOINT, query_args)
+        for element in xml_response.iter(tag="Game"):
+            for subelement in element:
+                if subelement.tag == 'id':
+                    game_id = subelement.text
+                if subelement.tag == 'GameTitle':
+                    game_title = subelement.text
+                if subelement.tag == 'Platform':
+                    game_platform = subelement.text
+            games_list.append(Game(game_id, game_title, platform=game_platform))
+        return games_list
+
+
+
 
