@@ -1,6 +1,6 @@
 import urllib
 import xml.etree.ElementTree as ET
-
+from urlutils import urlencode_no_plus
 from datetime import datetime
 
 
@@ -61,7 +61,7 @@ class API(object):
         # If response cannot be parsed because it is not valid XML, this function assumes an API error and raises an
         # APIException, passing forward the pages contents (which generally gives some indication of the error.
         if query_args is not None:
-            get_params = urllib.urlencode(query_args)
+            get_params = urlencode_no_plus.urlencode_no_plus(query_args)
             response = urllib.urlopen(api_url+'%s' % get_params)
         else:
             response = urllib.urlopen(api_url)
@@ -252,7 +252,6 @@ class API(object):
             return games_list
 
     def get_games_list(self, name, platform=None, genre=None):
-        name = urllib.quote(name)
         query_args = {'name': name}
         if platform is not None:
             query_args['platform'] = platform
@@ -262,15 +261,21 @@ class API(object):
         GET_GAMES_LIST_ENDPOINT = 'http://thegamesdb.net/api/GetGamesList.php?'
         xml_response = self.make_call(GET_GAMES_LIST_ENDPOINT, query_args)
         for element in xml_response.iter(tag="Game"):
+            game_release_date = None
+            game_platform = None
             for subelement in element:
                 if subelement.tag == 'id':
                     game_id = subelement.text
                 if subelement.tag == 'GameTitle':
                     game_title = subelement.text
+                if subelement.tag == 'ReleaseDate':
+                    game_release_date = subelement.text
                 if subelement.tag == 'Platform':
                     game_platform = subelement.text
-            games_list.append(Game(game_id, game_title, platform=game_platform))
+            games_list.append(Game(game_id, game_title, release_date=game_release_date, platform=game_platform))
         return games_list
+
+
 
 
 

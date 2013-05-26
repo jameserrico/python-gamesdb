@@ -108,7 +108,9 @@ for game in atari_games_list:
 
 [GamesDB GetGame API Call](http://wiki.thegamesdb.net/index.php?title=GetGame)
 
-Retrieve all of the available details for a game, based off of the game id, or name.  If passing in name, you may optionally filter results by Platform.  Note that when your query returns only one game (as it the case when querying by id) it will return one game.  When your query returns more than one item, it will return a list of Games.  When your query returns no reesults, None will be returned.
+Retrieve all of the available details for a game or list of games, based off of the game id or name.  If passing in name, you may optionally filter results by Platform.  Note that when your query returns only one game (as it the case when querying by id) it will return one game.  When your query returns more than one item, it will return a list of Games.  When your query returns no results, None will be returned.
+
+Note that GetGame will tree name arguments with spaces as an OR search operation.  For example searching where name="mega man" will return all games containing either "mega" or "man" in their title.  This is different that GetGamesList, which would treat the same search as an AND operation.
 
 #### Get Game by id
 
@@ -131,37 +133,337 @@ Williams Electronics
 #### Get Game by Name
 
 ```python
-game = gamesdb_api.get_game(id="1350")
-print game.title
-print game.overview
-print game.genres
-print game.developer
+mega_man_games = gamesdb_api.get_game(name="mega man")
+for game in mega_man_games:
+    print game.title
+    print game.platform
+    print "---------------------"
 ```
 
 **Output:**
 
 ```
-Joust
-Joust is a platforming game where the player controls a yellow knight riding a flying ostrich from a third-person perspective. The player navigates the protagonist around the game world, which consists of rock platforms floating above a flat island surrounded by lava.
-Platform
-Williams Electronics
+Mega Man
+Nintendo Entertainment System (NES)
+---------------------
+Mega Man Zero
+Nintendo Game Boy Advance
+---------------------
+Mega Man Soccer
+Super Nintendo (SNES)
+---------------------
+Mega Man 3
+Nintendo Game Boy
+---------------------
+Mega Man Xtreme
+Nintendo Game Boy Color
+---------------------
+Mega Man X5
+Sony Playstation
+---------------------
+
+...
+
+Mega Bomberman
+Sega Mega Drive
+---------------------
+Mega Turrican
+Sega Genesis
+---------------------
+Mega Force
+Atari 2600
+---------------------
+Mega Bomberman
+Sega Genesis
+---------------------
+Low G Man: The Low Gravity Man
+Nintendo Entertainment System (NES)
+---------------------
+Mega-Lo-Mania
+Super Nintendo (SNES)
+---------------------
+WarioWare, Inc.: Mega Microgames!
+Nintendo Game Boy Advance
+---------------------
+Sonic Mega Collection
+Nintendo GameCube
+---------------------
+WarioWare, Inc.: Mega Party Games!
+Nintendo GameCube
+---------------------
+Eight Man
+NeoGeo
+ 
+```
+#### Get Game by Name and Platform
+
+```python
+mega_man_games = gamesdb_api.get_game(name="mega man", platform='Nintendo Entertainment System (NES)')
+for game in mega_man_games:
+    print game.title
+    print game.platform
+    print "---------------------"
 ```
 
-#### Get Games List
+**Output:**
+
+```
+Mega Man
+Nintendo Entertainment System (NES)
+---------------------
+Mega Man 2
+Nintendo Entertainment System (NES)
+---------------------
+Mega Man 5
+Nintendo Entertainment System (NES)
+---------------------
+Mega Man 3
+Nintendo Entertainment System (NES)
+---------------------
+Mega Man 4
+Nintendo Entertainment System (NES)
+---------------------
+Mega Man 6
+Nintendo Entertainment System (NES)
+---------------------
+Low G Man: The Low Gravity Man
+Nintendo Entertainment System (NES)
+---------------------
+Pac-Man
+Nintendo Entertainment System (NES)
+---------------------
+Ms. Pac-Man
+Nintendo Entertainment System (NES)
+---------------------
+Spider-Man: Return of the Sinister Six
+Nintendo Entertainment System (NES)
+---------------------
+Metal Mech: Man & Machine
+Nintendo Entertainment System (NES)
+---------------------
+The Simpsons: Bartman Meets Radioactive Man
+Nintendo Entertainment System (NES)
+... 
+```
+
+### Get Games List
 
 [GamesDB GetGamesList API Call](http://wiki.thegamesdb.net/index.php?title=GetGamesList)
 
+Retrieve the id, title, release date (when available) and platform for a list of games, based off of the name, and optionally the platform and genre.  This call will always return a list of Games.
+
+Note that GetGamesList will treat name arguments with spaces as an AND search operation.  For example searching where name="mega man" will return all games containing both "mega" and "man" in their title.  This is different that GetGame, which would treat the same search as an OR operation.
+
+#### Get Games List by Name
+
 ```python
+mega_man_games = gamesdb_api.get_games_list(name="mega man")
+for game in mega_man_games:
+    print game.title
+    print game.platform
+    print game.release_date
+    print "---------------------"
 ```
 
 **Output:**
+
 ```
+Mega Man
+Nintendo Entertainment System (NES)
+12/17/1987
+---------------------
+Mega Man Zero
+Nintendo Game Boy Advance
+04/26/2002
+---------------------
+Mega Man 5
+Nintendo Entertainment System (NES)
+12/04/1992
+---------------------
+Mega Man X
+Super Nintendo (SNES)
+01/01/1994
+---------------------
+Mega Man 7
+Super Nintendo (SNES)
+03/24/1995
+---------------------
+Mega Man 2
+Nintendo Entertainment System (NES)
+11/24/1988
+---------------------
+Mega Man 3
+Nintendo Entertainment System (NES)
+09/28/1990
+---------------------
+Mega Man 4
+Nintendo Entertainment System (NES)
+12/06/1991
+---------------------
+Mega Man 6
+Nintendo Entertainment System (NES)
+10/06/1992
+---------------------
+Mega Man 8
+Sony Playstation
+12/17/1996
+---------------------
+Mega Man Legends
+Sony Playstation
+08/31/1998
+---------------------
+Mega Man X4
+Sony Playstation
+08/10/1997
+---------------------
+Mega Man X2
+Super Nintendo (SNES)
+01/01/1995
+---------------------
+Mega Man X3
+Super Nintendo (SNES)
+01/01/1996
+---------------------
+Mega Man 64
+Nintendo 64
+11/22/2000
+---------------------
+Mega Man & Bass
+Nintendo Game Boy Advance
+08/10/2002
+---------------------
+Mega Man Zero 2
+Nintendo Game Boy Advance
+05/02/2003
+---------------------
+Mega Man Zero 3
+Nintendo Game Boy Advance
+04/23/2004
+---------------------
+Mega Man Zero 4
+Nintendo Game Boy Advance
+04/21/2005
+---------------------
+Mega Man X6
+Sony Playstation
+12/04/2001
+---------------------
 ```
+
+#### Get Games List by Name and PLatform
+
+```python
+mega_man_games = gamesdb_api.get_games_list(name="mega man", platform='Sony Playstation')
+for game in mega_man_games:
+    print game.title
+    print game.platform
+    print game.release_date
+    print "---------------------"
+```
+
+**Output:**
+
+```
+Mega Man 8
+Sony Playstation
+12/17/1996
+---------------------
+Mega Man Legends
+Sony Playstation
+08/31/1998
+---------------------
+Mega Man X4
+Sony Playstation
+08/10/1997
+---------------------
+Mega Man X6
+Sony Playstation
+12/04/2001
+---------------------
+Mega Man X5
+Sony Playstation
+01/31/2001
+---------------------
+Mega Man X3
+Sony Playstation
+04/26/1996
+---------------------
+Mega Man Battle & Chase
+Sony Playstation
+11/30/1998
+---------------------
+Mega Man Legends 2
+Sony Playstation
+10/24/2000
+---------------------
+Spider-Man
+Sony Playstation
+01/01/2001
+---------------------
+Shadow Man
+Sony Playstation
+09/30/1999
+---------------------
+Pac-Man World
+Sony Playstation
+01/01/2000
+---------------------
+Action Man: Operation Extreme
+Sony Playstation
+11/08/2000
+---------------------
+Pac-Man World 20th Aniversary
+Sony Playstation
+09/30/1999
+---------------------
+Ms. Pac-Man Maze Madness
+Sony Playstation
+09/08/2000
+---------------------
+Spider-Man 2: Enter Electro
+Sony Playstation
+08/16/2001
+---------------------
+Iron Man / X-O Manowar in Heavy Metal
+Sony Playstation
+10/31/1996
+---------------------
+```
+
+#### Get Games List by Name and Genre
+Note that you can pass in genre and platform independently, name is the only required field.
+
+```python
+mega_man_games = gamesdb_api.get_games_list(name="mega man", platform='Sony Playstation', genre='platform')
+for game in mega_man_games:
+    print game.title
+    print game.platform
+    print game.release_date
+    print "---------------------"
+```
+
+**Output:**
+
+```
+Mega Man X6
+Sony Playstation
+12/04/2001
+---------------------
+Mega Man Legends 2
+Sony Playstation
+10/24/2000
+---------------------
+Pac-Man World 20th Aniversary
+Sony Playstation
+09/30/1999
+---------------------
+```
+
 
 
 h2. Classes
 
-At present, there are two main class types uses to present results:
+At present, there are two main class types uses to present results.  The specific entries that are populated will vary based off othe query and the actualy data available for your object(s).
 
 * Game
   * id

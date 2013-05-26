@@ -17,7 +17,7 @@ else:
         return isinstance(x, unicode)
 
 
-def urlencode_notplus(query, doseq=0):
+def urlencode_no_plus(query, doseq=0):
     """Encode a sequence of two-element tuples or dictionary into a URL query string.
 
     If any values in the query arg are sequences and doseq is true, each
