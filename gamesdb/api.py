@@ -153,23 +153,22 @@ class API(object):
                         memory=platform_memory, sound=platform_sound, media=platform_media, developer=platform_developer,
                         overview=platform_overview)
 
-    def get_platform_games(self, platform_id=None):
-
+    def get_platform_games(self, platform_id):
         GET_PLATFORM_GAMES_LIST_ENDPOINT = 'http://thegamesdb.net/api/GetPlatformGames.php?'
-        if platform_id is not None:
-            query_args = {'platform': platform_id}
-            xml_response = self.make_call(GET_PLATFORM_GAMES_LIST_ENDPOINT, query_args)
-        else:
-            xml_response = self.make_call(GET_PLATFORM_GAMES_LIST_ENDPOINT)
+        query_args = {'platform': platform_id}
+        xml_response = self.make_call(GET_PLATFORM_GAMES_LIST_ENDPOINT, query_args)
         platform_games_list = []
         for element in xml_response.iter(tag="Game"):
+            platform_games_list_release_date = None
             for subelement in element:
                 if subelement.tag == 'id':
                     platform_games_list_id = subelement.text
                 if subelement.tag == 'GameTitle':
                     platform_games_list_name = subelement.text
                 if subelement.tag == 'ReleaseDate':
-                    platform_games_list_release_date = datetime.strptime(subelement.text, "%m/%d/%Y")
+                    # platform_games_list_release_date = datetime.strptime(subelement.text, "%m/%d/%Y")
+                    # Omitting line above since date comes back in an inconsistent format, for example only %Y
+                    platform_games_list_release_date = subelement.text
             platform_games_list.append(Game(platform_games_list_id, platform_games_list_name,
                                             release_date=platform_games_list_release_date))
         return platform_games_list
@@ -194,14 +193,14 @@ class API(object):
         for element in xml_response.iter(tag="Game"):
             for subelement in element:
                 game_overview = None
+                game_release_date = None
                 game_esrb_rating = None
-                game_players = None
                 game_youtube_url = None
                 game_rating = None
                 game_logo_url = None
                 game_players = None
                 game_coop = None
-                game_genres = ''
+                game_genres = None
                 game_publisher = None
                 game_developer = None
                 if subelement.tag == 'id':
@@ -211,12 +210,14 @@ class API(object):
                 if subelement.tag == 'Platform':
                     game_platform = subelement.text
                 if subelement.tag == 'ReleaseDate':
-                    games_release_date = datetime.strptime(subelement.text, "%m/%d/%Y")
+                    # games_release_date = datetime.strptime(subelement.text, "%m/%d/%Y")
+                    game_release_date = subelement.text
                 if subelement.tag == 'Overview':
                     game_overview = subelement.text
                 if subelement.tag == 'ESRB':
                     game_esrb_rating = subelement.text
                 if subelement.tag == 'Genres':
+                    game_genres = ''
                     for genre_element in subelement.iter(tag="genre"):
                         # TODO put elements in a more appropriate data structure
                         game_genres += genre_element.text
@@ -238,13 +239,15 @@ class API(object):
                 if subelement.tag == 'clearlogo':
                     # TODO Capture image dimensions from API resposne
                     game_logo_url = game_base_img_url + subelement.text
-            games_list.append(Game(game_id, game_title, release_date=games_release_date, platform=game_platform,
-                                   overview=game_overview, esrb_rating=game_esrb_rating, genres=game_genres,
-                                   players=game_players, coop=game_coop, youtube_url=game_youtube_url,
-                                   publisher=game_publisher, developer=game_developer, rating=game_rating,
-                                   logo_url=game_logo_url))
+        games_list.append(Game(game_id, game_title, release_date=game_release_date, platform=game_platform,
+                               overview=game_overview, esrb_rating=game_esrb_rating, genres=game_genres,
+                               players=game_players, coop=game_coop, youtube_url=game_youtube_url,
+                               publisher=game_publisher, developer=game_developer, rating=game_rating,
+                               logo_url=game_logo_url))
         if len(games_list) == 0:
             return None
+        elif len(games_list) == 1:
+            return games_list[0]
         else:
             return games_list
 
