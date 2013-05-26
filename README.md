@@ -10,8 +10,6 @@ fairly complete for fetching data about games and platforms.
 The prerequisites for this pacakge are generally provided as a part of base Python and should not require any special installation.
 
 * [urllib](http://docs.python.org/2/library/urllib.html): Installed by default with most modern Python interpreters.  Used to make HTTP requests and read responses.
-* [urllib2](http://docs.python.org/2/library/urllib2.html): Installed by default with most modern Python interpreters.  Used to make HTTP requests and read responses
-* [ElementTree](http://docs.python.org/2/library/xml.etree.elementtree.html): Installed by default with most modern Python interpreters.  Used to parse XML responses.
 
 #Usage
 
@@ -461,7 +459,7 @@ Sony Playstation
 
 
 
-h2. Classes
+# Classes
 
 At present, there are two main class types uses to present results.  The specific entries that are populated will vary based off othe query and the actualy data available for your object(s).
 
