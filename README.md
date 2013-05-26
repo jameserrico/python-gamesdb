@@ -6,6 +6,9 @@ python-gamesdb is a python client for gamesdb api (http://wiki.thegamesdb.net/in
 Presently, most but not all API calls are supported.  Retrieval for most images has not yet been developed, however it is
 fairly complete for fetching data about games and platforms.
 
+* auto-gen TOC:
+{:toc}
+
 # Prerequisites
 * [urllib](http://docs.python.org/2/library/urllib.html): Installed by default with most modern Python interpreters.  Used to make HTTP requests and read responses.
 * [urllib2](http://docs.python.org/2/library/urllib2.html): Installed by default with most modern Python interpreters.  Used to make HTTP requests and read responses
