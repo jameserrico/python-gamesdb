@@ -4,9 +4,11 @@ gamesdb_api = API()
 # atari_games_list = gamesdb_api.get_platform_games('22')
 # for game in atari_games_list:
 #     print game.id, "-", game.title, "-"
-atari_joust = gamesdb_api.get_game(id="1350")
-print atari_joust.title, atari_joust.overview, atari_joust.genres, atari_joust.logo_url. atari_joust.developer
-
+mega_man_games = gamesdb_api.get_game(name="mega man")
+for game in mega_man_games:
+    print game.title
+    print game.platform
+    print "---------------------"
 # print game.title, game.overview, game.genres, game.logo_url. game.developer
 # for platform in platform_list:
 #     print platform.id, "-", platform.name, "-", platform.alias

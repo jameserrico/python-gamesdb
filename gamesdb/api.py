@@ -1,6 +1,6 @@
-import urllib2
 import urllib
 import xml.etree.ElementTree as ET
+
 from datetime import datetime
 
 
@@ -61,11 +61,10 @@ class API(object):
         # If response cannot be parsed because it is not valid XML, this function assumes an API error and raises an
         # APIException, passing forward the pages contents (which generally gives some indication of the error.
         if query_args is not None:
-            query_data = urllib.urlencode(query_args)
-            request = urllib2.Request(api_url, query_data)
-            response = urllib2.urlopen(request)
+            get_params = urllib.urlencode(query_args)
+            response = urllib.urlopen(api_url+'%s' % get_params)
         else:
-            response = urllib2.urlopen(api_url)
+            response = urllib.urlopen(api_url)
         page = response.read()
 
         # Make sure the XML Parser doesn't return a ParsError.  If it does, it's probably and API Issue, so raise an
@@ -191,18 +190,18 @@ class API(object):
         for element in xml_response.iter(tag="baseImgUrl"):
             game_base_img_url = element.text
         for element in xml_response.iter(tag="Game"):
+            game_overview = None
+            game_release_date = None
+            game_esrb_rating = None
+            game_youtube_url = None
+            game_rating = None
+            game_logo_url = None
+            game_players = None
+            game_coop = None
+            game_genres = None
+            game_publisher = None
+            game_developer = None
             for subelement in element:
-                game_overview = None
-                game_release_date = None
-                game_esrb_rating = None
-                game_youtube_url = None
-                game_rating = None
-                game_logo_url = None
-                game_players = None
-                game_coop = None
-                game_genres = None
-                game_publisher = None
-                game_developer = None
                 if subelement.tag == 'id':
                     game_id = subelement.text
                 if subelement.tag == 'GameTitle':
@@ -239,11 +238,12 @@ class API(object):
                 if subelement.tag == 'clearlogo':
                     # TODO Capture image dimensions from API resposne
                     game_logo_url = game_base_img_url + subelement.text
-        games_list.append(Game(game_id, game_title, release_date=game_release_date, platform=game_platform,
+            games_list.append(Game(game_id, game_title, release_date=game_release_date, platform=game_platform,
                                overview=game_overview, esrb_rating=game_esrb_rating, genres=game_genres,
                                players=game_players, coop=game_coop, youtube_url=game_youtube_url,
                                publisher=game_publisher, developer=game_developer, rating=game_rating,
                                logo_url=game_logo_url))
+
         if len(games_list) == 0:
             return None
         elif len(games_list) == 1:
@@ -252,6 +252,7 @@ class API(object):
             return games_list
 
     def get_games_list(self, name, platform=None, genre=None):
+        name = urllib.quote(name)
         query_args = {'name': name}
         if platform is not None:
             query_args['platform'] = platform
