@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(name='gamesdb',
-      version='0.1',
+      version='0.1.1',
       description='Python client for thegamesdb.net API for retrieving video game data.',
       author='James Errico',
       author_email='james.errico@gmail.com',

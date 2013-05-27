@@ -1,12 +1,20 @@
 python-gamesdb
 ==============
+GitHub: (https://github.com/jameserrico/python-gamesdb)
 
-python-gamesdb is a python client for gamesdb api (http://wiki.thegamesdb.net/index.php?title=API_Introduction)
+python-gamesdb is a python client for thegamesdb.net API (http://wiki.thegamesdb.net/index.php?title=API_Introduction)
 
 Presently, most but not all API calls are supported.  Retrieval for most images has not yet been developed, however it is
 fairly complete for fetching data about games and platforms.
 
-# Prerequisites
+#Installation
+
+```
+pip install gamesdb
+```
+
+
+## Prerequisites
 The prerequisites for this pacakge are generally provided as a part of base Python and should not require any special installation.
 
 * [urllib](http://docs.python.org/2/library/urllib.html): Installed by default with most modern Python interpreters.  Used to make HTTP requests and read responses.
