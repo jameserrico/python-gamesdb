@@ -1,8 +1,6 @@
 import urllib
 import xml.etree.ElementTree as ET
 from urlutils import urlencode_no_plus
-from datetime import datetime
-
 
 class Game(object):
 
