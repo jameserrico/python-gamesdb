@@ -1,4 +1,5 @@
 import urllib
+import urllib2
 import xml.etree.ElementTree as ET
 from urlutils import urlencode_no_plus
 
@@ -58,9 +59,11 @@ class API(object):
         # This function will simply make the call, and return the response as an ElementTree object for parsing,
         # If response cannot be parsed because it is not valid XML, this function assumes an API error and raises an
         # APIException, passing forward the pages contents (which generally gives some indication of the error.
+        opener = urllib2.build_opener()
+        opener.addheaders = [('User-agent', 'Mozilla/5.0')]
         if query_args is not None:
             get_params = urlencode_no_plus.urlencode_no_plus(query_args)
-            response = urllib.urlopen(api_url+'%s' % get_params)
+            response = opener.open(api_url+'%s' % get_params)
         else:
             response = urllib.urlopen(api_url)
         page = response.read()
@@ -71,7 +74,7 @@ class API(object):
             xml_response = ET.fromstring(page)
         except ET.ParseError:
             raise APIException(page)
-        return  xml_response
+        return xml_response
 
     def get_platforms_list(self):
         platforms_list = []
